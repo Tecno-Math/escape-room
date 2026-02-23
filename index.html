@@ -27,8 +27,7 @@ button {
     display: none;
     z-index: 1000;
 }
-#timer {
-    font-size: 20px;
+#menu h2 {
     margin-bottom: 20px;
 }
 </style>
@@ -36,7 +35,6 @@ button {
 <body>
 
 <h1>🔐 Escape Room Matemàtic</h1>
-<div id="timer">Temps restant: 10:00</div>
 <div id="game"></div>
 
 <div id="menu">
@@ -51,34 +49,89 @@ let checkpointActual = 0;
 let preguntaActual = 0;
 let respostesCorrectes = 0;
 let codiFinal = "";
-let tempsGlobal = 10 * 60; // 10 minuts per tot el joc
-let temporitzador;
 
-const checkpoints = [ /* Aquí va tot l'array dels 5 checkpoints amb preguntes igual que abans */ ];
+const checkpoints = [
 
-// TEMPORIZADOR GLOBAL
-function iniciarTemporitzador() {
-    clearInterval(temporitzador);
-    document.getElementById("timer").textContent = formatTemps(tempsGlobal);
-    temporitzador = setInterval(() => {
-        tempsGlobal--;
-        document.getElementById("timer").textContent = formatTemps(tempsGlobal);
-        if (tempsGlobal <= 0) {
-            clearInterval(temporitzador);
-            alert("S'ha acabat el temps! Es reinicia l'escape room.");
-            reiniciarTot();
-        }
-    }, 1000);
+/* ---------------- CHECKPOINT 1 ---------------- */
+{
+digit: "3",
+preguntes: [
+["Quins usos donem als nombres?", ["Comptar (persones, objectes, diners…)","Decoració","Dormir"], 0],
+["El 0 representa una quantitat?", ["Sí","No","Depèn"], 0],
+["Què és un nombre?", ["Un objecte","Un dibuix","Una idea matemàtica"], 2],
+["Maneres de comptar sense nombres?", ["Colors, pals i pedres","Ordinador","Mòbil"], 0],
+["Per què els nombres són infinits?", ["Es repeteixen","Sempre podem sumar 1","Tenen límit"], 1]
+],
+final: ["Quin és l'oposat de +6?", "-6"]
+},
+
+/* ---------------- CHECKPOINT 2 ---------------- */
+{
+digit: "7",
+preguntes: [
+["Quins són nombres enters?", ["-3, -2, -1, 0, 1, 2","1/2","0.5"], 0],
+["Valor absolut de -8?", ["-8","8","0"], 1],
+["Oposat de +6?", ["6","0","-6"], 2],
+["(-4) × (-2) =", ["8","-8","-6"], 0],
+["2 + 3 × 4 =", ["20","14","24"], 1],
+["-5 + 3 =", ["-8","8","-2"], 2]
+],
+final: ["Quina és la potència d'una potència? Exemple: (2^3)^2 = ?", "64"]
+},
+
+/* ---------------- CHECKPOINT 3 ---------------- */
+{
+digit: "4",
+preguntes: [
+["Un múltiple de 6 és...", ["7","12","13"], 1],
+["Un divisor de 30 és...", ["5","7","8"], 0],
+["El 17 és...", ["Compost","Primer","Parell"], 1],
+["El MCD de 12 i 18 és...", ["3","6","36"], 1],
+["El MCM de 4 i 5 és...", ["20","9","10"], 0],
+["Un nombre divisible per 10 acaba en...", ["5","2","0"], 2]
+],
+final: ["MCM de 3 i 4 =", "12"]
+},
+
+/* ---------------- CHECKPOINT 4 ---------------- */
+{
+digit: "9",
+preguntes: [
+["El numerador indica les parts que agafem?", ["Parts que agafem","Parts en què dividim","El total"], 0],
+["El denominador indica les parts en què dividim?", ["Parts que agafem","Parts en què dividim","El resultat"], 1],
+["3/4 és...", ["Pròpia","Impròpia","Equivalent a la unitat"], 0],
+["7/3 és...", ["Pròpia","Impròpia","Equivalent a la unitat"], 1],
+["5/5 és...", ["Pròpia","Impròpia","Equivalent a la unitat"], 2],
+["2/4 i 1/2 són...", ["Diferents","Equivalents","Impròpies"], 1],
+["Fracció irreductible de 8/12?", ["2/3","4/6","3/4"], 0],
+["Fracció inversa de 4/7?", ["4/7","7/4","-4/7"], 1],
+["1/3 + 1/3 =", ["2/6","1/6","2/3"], 2],
+["2/3 × 3/5 =", ["2/5","6/15","1/2"], 0]
+],
+final: ["Si reparteixes 3 pizzes entre 4 persones, quina és la fracció? (numerador)", "3"]
+},
+
+/* ---------------- CHECKPOINT 5 ---------------- */
+{
+digit: "6",
+preguntes: [
+["Si 2 quaderns costen 4€, quant costen 6 quaderns?", ["8€","12€","10€"], 1],
+["Si 3 kg de pomes valen 6€, quin és el preu per kg?", ["2€","3€","1€"], 0],
+["En una relació proporcional directa, si una magnitud augmenta...", ["L’altra disminueix","No canvia","L’altra també augmenta"], 2],
+["Si 5 samarretes costen 25€, quant costen 8 samarretes?", ["35€","40€","30€"], 1],
+["El quocient en una taula proporcional és...", ["Constant","Variable","Negatiu"], 0],
+["Si 4 litres de gasolina costen 8€, quant costen 10 litres?", ["18€","16€","20€"], 2],
+["La constant de proporcionalitat és...", ["La suma dels valors","El nombre pel qual multipliquem","La diferència"], 1],
+["Si 7 llibretes costen 14€, quantes puc comprar amb 20€?", ["10","12","14"], 0]
+],
+final: ["Si 3 bolígrafs costen 9€, quant costen 15 bolígrafs?", "45"]
 }
 
-function formatTemps(segons) {
-    let m = Math.floor(segons / 60);
-    let s = segons % 60;
-    return `Temps restant: ${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-}
+];
 
-// FUNCIONS JOC
-function barrejar(array) { return array.sort(() => Math.random() - 0.5); }
+function barrejar(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
 
 function mostrarPregunta() {
     if (preguntaActual >= checkpoints[checkpointActual].preguntes.length) {
@@ -97,7 +150,9 @@ function mostrarPregunta() {
 }
 
 function respondre(seleccionada, correcta) {
-    if (seleccionada === correcta) { respostesCorrectes++; }
+    if (seleccionada === correcta) {
+        respostesCorrectes++;
+    }
     preguntaActual++;
     mostrarPregunta();
 }
@@ -125,7 +180,6 @@ function validarFinal() {
         preguntaActual = 0;
         respostesCorrectes = 0;
         if (checkpointActual >= checkpoints.length) {
-            clearInterval(temporitzador);
             document.getElementById("game").innerHTML =
             `<h1>🏆 HAS ESCAPAT!</h1>
              <h2>Codi final: ${codiFinal}</h2>`;
@@ -140,9 +194,7 @@ function reiniciarTot() {
     preguntaActual = 0;
     respostesCorrectes = 0;
     codiFinal = "";
-    tempsGlobal = 10 * 60;
     tancarMenu();
-    iniciarTemporitzador();
     mostrarPregunta();
 }
 
@@ -163,8 +215,6 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
-// Inici automàtic
-iniciarTemporitzador();
 mostrarPregunta();
 </script>
 </body>
