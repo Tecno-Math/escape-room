@@ -14,53 +14,32 @@ body {
     background-position: center;
     background-size: cover;
     color: white;
-    text-align: center;
-    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-/* Capa negra per llegir millor */
+/* Títol */
+h1 {
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 10px 30px;
+    border-radius: 10px;
+}
+
+/* Quadre principal */
 #game {
     background: rgba(0, 0, 0, 0.85);
-    padding: 20px;
-    border-radius: 10px;
-    display: inline-block;
-    min-width: 300px;
-}
-
-h1 {
-    background: rgba(0, 0, 0, 0.85);
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 10px;
-}
-
-/* Botó menú */
-#menuBtn {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    background: #222;
-    color: white;
-    border: 1px solid #555;
-    padding: 10px 15px;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-/* Finestra menú */
-#menu {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.9);
     padding: 30px;
-    display: none;
-    z-index: 1000;
-    border-radius: 10px;
+    border-radius: 15px;
+    min-width: 350px;
+    text-align: center;
 }
 
+/* Botons */
 button {
     padding: 10px 20px;
     margin: 8px;
@@ -75,12 +54,32 @@ button {
 button:hover {
     background: #555;
 }
+
+/* Botó menú */
+#menuBtn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: #222;
+}
+
+/* Menú */
+#menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    padding: 30px;
+    display: none;
+    border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<button id="menuBtn" onclick="obrirMenu()">☰ Menú</button>
+<button id="menuBtn" onclick="obrirMenu()">☰</button>
 
 <h1>🔐 Escape Room Matemàtic</h1>
 <div id="game"></div>
@@ -122,7 +121,7 @@ preguntes: [
 ["2 + 3 × 4 =", ["20","14","24"], 1],
 ["-5 + 3 =", ["-8","8","-2"], 2]
 ],
-final: ["2^5 = ?", "64"]
+final: ["2^5 = ?", "32"]
 },
 
 {
@@ -215,6 +214,7 @@ function mostrarFinal() {
     `<h2>Pregunta final</h2>
      <p>${pregunta}</p>
      <input id="resFinal">
+     <br><br>
      <button onclick="validarFinal()">Confirmar</button>`;
 }
 
