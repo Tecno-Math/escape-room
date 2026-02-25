@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Escape Room Matemàtic</title>
-
 <style>
 body {
     margin: 0;
@@ -14,7 +13,6 @@ body {
     background-position: center;
     background-size: cover;
     color: white;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -48,9 +46,7 @@ button {
     border: 1px solid #555;
 }
 
-button:hover {
-    background: #555;
-}
+button:hover { background: #555; }
 
 #menuBtn {
     position: fixed;
@@ -71,7 +67,6 @@ button:hover {
 }
 </style>
 </head>
-
 <body>
 
 <button id="menuBtn" onclick="obrirMenu()">☰</button>
@@ -87,53 +82,104 @@ button:hover {
 </div>
 
 <script>
-
 let checkpointActual = 0;
 let preguntaActual = 0;
 let codiFinal = "";
 let errorsCheckpoint = false;
 
 const checkpoints = [
+/* ---------------- CHECKPOINT 1 ---------------- */
 {
 digit: "3",
 preguntes: [
 ["Quins usos donem als nombres?", ["Comptar (persones, objectes, diners…)","Decoració","Dormir"], 0],
-["El 0 representa una quantitat?", ["Sí","No","Depèn"], 0]
+["El 0 representa una quantitat?", ["Sí","No","Depèn"], 0],
+["Què és un nombre?", ["Un objecte","Un dibuix","Una idea matemàtica"], 2],
+["Com es comptava en l'antiguetat?", ["Colors, pals i pedres","Ordinador","Mòbil"], 0],
+["Per què els nombres són infinits?", ["Es repeteixen","Sempre podem sumar 1","Tenen límit"], 1]
 ],
 final: ["0+8?", "8"]
+},
+/* ---------------- CHECKPOINT 2 ---------------- */
+{
+digit: "7",
+preguntes: [
+["Quins són nombres enters?", ["-3, -2, -1, 0, 1, 2","1/2","0.5"], 0],
+["Valor absolut de -8?", ["-8","8","0"], 1],
+["Oposat de +6?", ["6","0","-6"], 2],
+["(-4) + (-2) =", ["-6","-8","6"], 0],
+["2 + 3 × 4 =", ["20","14","24"], 1],
+["-5 + 3 =", ["-8","8","-2"], 2]
+],
+final: ["2^5 = ?", "32"]
+},
+/* ---------------- CHECKPOINT 3 ---------------- */
+{
+digit: "4",
+preguntes: [
+["Un múltiple de 6 és...", ["7","12","13"], 1],
+["Un divisor de 30 és...", ["5","7","8"], 0],
+["El 17 és...", ["Compost","Primer","Parell"], 1],
+["El MCD de 12 i 18 és...", ["3","6","36"], 1],
+["El MCM de 4 i 5 és...", ["20","9","10"], 0],
+["Un nombre divisible per 10 acaba en...", ["5","2","0"], 2]
+],
+final: ["MCM de 3 i 4 =", "12"]
+},
+/* ---------------- CHECKPOINT 4 ---------------- */
+{
+digit: "9",
+preguntes: [
+["El numerador indica les parts que agafem?", ["Parts que agafem","Parts en què dividim","El total"], 0],
+["El denominador indica les parts en què dividim?", ["Parts que agafem","Parts en què dividim","El resultat"], 1],
+["3/4 és...", ["Pròpia","Impròpia","Equivalent a la unitat"], 0],
+["7/3 és...", ["Pròpia","Impròpia","Equivalent a la unitat"], 1],
+["5/5 és...", ["Pròpia","Impròpia","Equivalent a la unitat"], 2],
+["2/4 i 1/2 són...", ["Diferents","Equivalents","Impròpies"], 1],
+["Fracció irreductible de 8/12?", ["2/3","4/6","3/4"], 0],
+["Fracció inversa de 4/7?", ["4/7","7/4","-4/7"], 1],
+["1/3 + 1/3 =", ["2/6","1/6","2/3"], 2],
+["2/3 × 3/5 =", ["2/5","6/15","1/2"], 0]
+],
+final: ["Si reparteixes 3 pizzes entre 4 persones, quina és la fracció? (numerador)", "3"]
+},
+/* ---------------- CHECKPOINT 5 ---------------- */
+{
+digit: "6",
+preguntes: [
+["Si 2 quaderns costen 4€, quant costen 6 quaderns?", ["8€","12€","10€"], 1],
+["Si 3 kg de pomes valen 6€, quin és el preu per kg?", ["2€","3€","1€"], 0],
+["En una relació proporcional directa, si una magnitud augmenta...", ["L’altra disminueix","No canvia","L’altra també augmenta"], 2],
+["Si 5 samarretes costen 25€, quant costen 8 samarretes?", ["35€","40€","30€"], 1],
+["El quocient en una taula proporcional és...", ["Constant","Variable","Negatiu"], 0],
+["Si 4 litres de gasolina costen 8€, quant costen 10 litres?", ["18€","16€","20€"], 2],
+["La constant de proporcionalitat és...", ["La suma dels valors","El nombre pel qual multipliquem","La diferència"], 1],
+["Si 7 llibretes costen 14€, quantes puc comprar amb 20€?", ["10","12","14"], 0]
+],
+final: ["Si 3 bolígrafs costen 9€, quant costen 15 bolígrafs?", "45"]
 }
 ];
 
-function barrejar(array) {
-    return array.sort(() => Math.random() - 0.5);
-}
+function barrejar(array) { return array.sort(() => Math.random() - 0.5); }
 
 function mostrarPregunta() {
     if (preguntaActual >= checkpoints[checkpointActual].preguntes.length) {
         mostrarFinal();
         return;
     }
-
     let p = checkpoints[checkpointActual].preguntes[preguntaActual];
     let opcionsBarrejades = barrejar([...p[1]]);
     let correctaText = p[1][p[2]];
 
-    let html = `<h2>🔹 Checkpoint ${checkpointActual+1}</h2>`;
-    html += `<p>${p[0]}</p>`;
-
+    let html = `<h2>🔹 Checkpoint ${checkpointActual+1}</h2><p>${p[0]}</p>`;
     opcionsBarrejades.forEach(op => {
         html += `<button onclick="respondre('${op}', '${correctaText}')">${op}</button><br>`;
     });
-
     document.getElementById("game").innerHTML = html;
 }
 
 function respondre(seleccionada, correcta) {
-
-    if (seleccionada !== correcta) {
-        errorsCheckpoint = true;
-    }
-
+    if (seleccionada !== correcta) errorsCheckpoint = true;
     preguntaActual++;
     mostrarPregunta();
 }
@@ -141,60 +187,43 @@ function respondre(seleccionada, correcta) {
 function mostrarFinal() {
     let pregunta = checkpoints[checkpointActual].final[0];
     document.getElementById("game").innerHTML =
-    `<h2>Pregunta final</h2>
-     <p>${pregunta}</p>
-     <input id="resFinal">
-     <br><br>
+    `<h2>Pregunta final</h2><p>${pregunta}</p>
+     <input id="resFinal"><br><br>
      <button onclick="validarFinal()">Confirmar</button>`;
 }
 
 function validarFinal() {
-
     let resposta = document.getElementById("resFinal").value;
-
     if (resposta !== checkpoints[checkpointActual].final[1] || errorsCheckpoint) {
         document.getElementById("game").innerHTML =
-        `<h2>❌ Alguna pregunta està malament!</h2>
-         <p>Reiniciant checkpoint...</p>`;
+        `<h2>❌ Alguna pregunta està malament!</h2><p>Reiniciant checkpoint...</p>`;
         setTimeout(reiniciarCheckpoint, 2500);
         return;
     }
-
     codiFinal += checkpoints[checkpointActual].digit;
     checkpointActual++;
     preguntaActual = 0;
     errorsCheckpoint = false;
-
-    document.getElementById("game").innerHTML =
-    `<h2>✅ Checkpoint superat!</h2>`;
+    if (checkpointActual >= checkpoints.length) {
+        document.getElementById("game").innerHTML =
+        `<h1>🏆 HAS ESCAPAT!</h1><h2>Codi final: ${codiFinal}</h2>`;
+    } else mostrarPregunta();
 }
 
 function reiniciarTot() {
-    checkpointActual = 0;
-    preguntaActual = 0;
-    codiFinal = "";
-    errorsCheckpoint = false;
-    tancarMenu();
-    mostrarPregunta();
+    checkpointActual = 0; preguntaActual = 0; codiFinal = ""; errorsCheckpoint = false;
+    tancarMenu(); mostrarPregunta();
 }
 
 function reiniciarCheckpoint() {
-    preguntaActual = 0;
-    errorsCheckpoint = false;
-    tancarMenu();
-    mostrarPregunta();
+    preguntaActual = 0; errorsCheckpoint = false;
+    tancarMenu(); mostrarPregunta();
 }
 
-function obrirMenu() {
-    document.getElementById("menu").style.display = "block";
-}
-
-function tancarMenu() {
-    document.getElementById("menu").style.display = "none";
-}
+function obrirMenu() { document.getElementById("menu").style.display = "block"; }
+function tancarMenu() { document.getElementById("menu").style.display = "none"; }
 
 mostrarPregunta();
-
 </script>
 </body>
 </html>
